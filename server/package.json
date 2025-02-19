@@ -1,0 +1,14 @@
+{
+  "name": "holocap-server",
+  "version": "1.0.0",
+  "description": "Server for the Holo-Cap app",
+  "main": "App.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jetmon Deng",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
