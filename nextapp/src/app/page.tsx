@@ -1,7 +1,11 @@
+'use client'
 import BackgroundImage from "../../public/imgs/background.jpg"
 
 export default function Home() {
 
+  function gotoInterpreter() {
+    location.href = "/interpreter"
+  }
 
   return (
     <div className="min-h-[100vh] min-w-[100vw] bg-black flex justify-center items-center">
@@ -14,7 +18,7 @@ export default function Home() {
               <h1 className="text-[50px] select-none">Holo<b>Cap</b></h1>
               <p>Developed by the SSE</p>
             </div>
-            <button className="w-[150px] text-[25px] p-[10px] border rounded-lg backdrop-blur-sm">Enter</button>
+            <button className="w-[150px] text-[25px] p-[10px] border rounded-lg backdrop-blur-sm" onClick={gotoInterpreter}>Enter</button>
           </div>
           
         </div>
