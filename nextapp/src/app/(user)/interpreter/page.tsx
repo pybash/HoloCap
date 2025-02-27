@@ -14,25 +14,7 @@ interface LogInfo {
 export default function Interpreter () {
 
     const [LogData, setLogData] = useState([
-      {
-        "time": "3:00",
-        "transcription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris lobortis, leo nec ultricies accumsan, lorem eros pharetra leo, vitae dignissim sem velit non tellus. Maecenas a felis est. Morbi vestibulum, tortor ut fermentum commodo, lacus sem porttitor arcu, in suscipit nisi felis non felis. Duis aliquam lorem eu varius tincidunt. Aenean aliquam interdum metus, ac maximus nisi iaculis a. Nunc nec dignissim dolor. Etiam a sodales dui, sed feugiat nulla. Morbi dapibus ipsum vitae sapien molestie semper. Cras nec dapibus nisl, quis molestie turpis. Aliquam ultrices risus at tortor blandit ultrices et a ante. Donec scelerisque viverra efficitur. Phasellus molestie nisi felis, nec suscipit libero lacinia sed."
-      },{
-        "time": "3:00",
-        "transcription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris lobortis, leo nec ultricies accumsan, lorem eros pharetra leo, vitae dignissim sem velit non tellus. Maecenas a felis est. Morbi vestibulum, tortor ut fermentum commodo, lacus sem porttitor arcu, in suscipit nisi felis non felis. Duis aliquam lorem eu varius tincidunt. Aenean aliquam interdum metus, ac maximus nisi iaculis a. Nunc nec dignissim dolor. Etiam a sodales dui, sed feugiat nulla. Morbi dapibus ipsum vitae sapien molestie semper. Cras nec dapibus nisl, quis molestie turpis. Aliquam ultrices risus at tortor blandit ultrices et a ante. Donec scelerisque viverra efficitur. Phasellus molestie nisi felis, nec suscipit libero lacinia sed."
-      },{
-        "time": "3:00",
-        "transcription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris lobortis, leo nec ultricies accumsan, lorem eros pharetra leo, vitae dignissim sem velit non tellus. Maecenas a felis est. Morbi vestibulum, tortor ut fermentum commodo, lacus sem porttitor arcu, in suscipit nisi felis non felis. Duis aliquam lorem eu varius tincidunt. Aenean aliquam interdum metus, ac maximus nisi iaculis a. Nunc nec dignissim dolor. Etiam a sodales dui, sed feugiat nulla. Morbi dapibus ipsum vitae sapien molestie semper. Cras nec dapibus nisl, quis molestie turpis. Aliquam ultrices risus at tortor blandit ultrices et a ante. Donec scelerisque viverra efficitur. Phasellus molestie nisi felis, nec suscipit libero lacinia sed."
-      },{
-        "time": "3:00",
-        "transcription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris lobortis, leo nec ultricies accumsan, lorem eros pharetra leo, vitae dignissim sem velit non tellus. Maecenas a felis est. Morbi vestibulum, tortor ut fermentum commodo, lacus sem porttitor arcu, in suscipit nisi felis non felis. Duis aliquam lorem eu varius tincidunt. Aenean aliquam interdum metus, ac maximus nisi iaculis a. Nunc nec dignissim dolor. Etiam a sodales dui, sed feugiat nulla. Morbi dapibus ipsum vitae sapien molestie semper. Cras nec dapibus nisl, quis molestie turpis. Aliquam ultrices risus at tortor blandit ultrices et a ante. Donec scelerisque viverra efficitur. Phasellus molestie nisi felis, nec suscipit libero lacinia sed."
-      },{
-        "time": "3:00",
-        "transcription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris lobortis, leo nec ultricies accumsan, lorem eros pharetra leo, vitae dignissim sem velit non tellus. Maecenas a felis est. Morbi vestibulum, tortor ut fermentum commodo, lacus sem porttitor arcu, in suscipit nisi felis non felis. Duis aliquam lorem eu varius tincidunt. Aenean aliquam interdum metus, ac maximus nisi iaculis a. Nunc nec dignissim dolor. Etiam a sodales dui, sed feugiat nulla. Morbi dapibus ipsum vitae sapien molestie semper. Cras nec dapibus nisl, quis molestie turpis. Aliquam ultrices risus at tortor blandit ultrices et a ante. Donec scelerisque viverra efficitur. Phasellus molestie nisi felis, nec suscipit libero lacinia sed."
-      },{
-        "time": "12:00",
-        "transcription": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris lobortis, leo nec ultricies accumsan, lorem eros pharetra leo, vitae dignissim sem velit non tellus. Maecenas a felis est. Morbi vestibulum, tortor ut fermentum commodo, lacus sem porttitor arcu, in suscipit nisi felis non felis. Duis aliquam lorem eu varius tincidunt. Aenean aliquam interdum metus, ac maximus nisi iaculis a. Nunc nec dignissim dolor. Etiam a sodales dui, sed feugiat nulla. Morbi dapibus ipsum vitae sapien molestie semper. Cras nec dapibus nisl, quis molestie turpis. Aliquam ultrices risus at tortor blandit ultrices et a ante. Donec scelerisque viverra efficitur. Phasellus molestie nisi felis, nec suscipit libero lacinia sed."
-      },
+
     ]); 
 
     const [vadStatus, setVAD] = useState(false);
