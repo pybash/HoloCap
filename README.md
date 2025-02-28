@@ -17,7 +17,7 @@ npm install express cors body-parser ws crypto
 cd nextapp
 npm i --force
 ```
-**Note:** Force is required since ricky0123/vad conflicts with React
+**Note:** Force is required since ricky0123/vad conflicts with Next.JS
 
 ## Design
 ![Image 2](docs/Domain%20Model.drawio.png)
