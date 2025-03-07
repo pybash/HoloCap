@@ -70,7 +70,16 @@ app.on('upgrade', (req, socket, head) => {
         }
     });
 // remove websocket uppon disconnect
-
+    ws.on('close', () => {
+            Object.keys(activeSessions).forEach((key) => {
+                if (activeSessions[key] === ws) {
+                    delete activeSessions[key];
+                    console.log(`Connection closed for code: ${key}`);
+                }
+            });
+        });
+    });
+}); 
 // start
 const server = app.listen(port, () => {
     console.log(`Server running on port ${port}`);
