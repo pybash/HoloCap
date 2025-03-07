@@ -37,7 +37,7 @@ app.post('/api/connect', (req, res) => {
     res.json({ message: 'Connected successfully' });
 });
 
-// handle audio stream from HoloLens
+// handle audio stream from Holo Lens
 app.on('upgrade', (req, socket, head) => {
     wss.handleUpgrade(req, socket, head, (ws) => {
         ws.on('message', async (message) => {
