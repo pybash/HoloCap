@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HoloCap User</title>
+    <script>
+        let client_code;
+        let websocketConnection;
+        fetch("http://localhost:5000/api/pair",
+            {
+                method: "POST"
+            }
+        )
+        .then(resp => resp.json())
+        .then((resp) => {
+            client_code = resp['code']
+
+            websocketConnection= new WebSocket("ws://localhost:5000/")
+
+            websocketConnection.addEventListener("open", (evt) => {
+                console.log("We are in!")
+                websocketConnection.send(JSON.stringify({
+                    code: resp['code']
+                }))
+            })
+
+            websocketConnection.addEventListener("message", (evt) => {
+                console.log(evt)
+            })
+        })
+
+
+        
+    </script>
+</head>
+<body>
+    
+</body>
+</html>
