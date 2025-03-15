@@ -37,31 +37,49 @@ app.post('/api/connect', (req, res) => {
     res.json({ message: 'Connected successfully' });
 });
 
-// handle audio stream from HoloLens
+// handle audio stream from Holo Lens
 app.on('upgrade', (req, socket, head) => {
     wss.handleUpgrade(req, socket, head, (ws) => {
         ws.on('message', async (message) => {
             const { code, data } = JSON.parse(message);
-            if (!activeSessions[code]) return;
+            if (!activeSessions[code]){
+                ws.send(JSON.stringify({error:'Invalid or expired pairing code' }));
+                return
+            }
+            // store websocket conns
+            if (activeSessions[code] === null) {
+                activeSessions[code] = ws;
+                console.log(`HoloLens connected with code: ${code}`);
+            }
 
             // Decode base64 audio data thru openai
-            try {
-                const response = await openai.audio.transcriptions.create({
-                    file: Buffer.from(data, 'base64'),
-                    model: 'whisper-1',
-                });
+            if (data) {
+                try {
+                    const response = await openai.audio.transcriptions.create({
+                        file: Buffer.from(data, 'base64'),
+                        model: 'whisper-1',
+                    });
 
                 // send transcription
-                activeSessions[code]?.send(JSON.stringify({ transcript: response.text }));
+                if (activeSessions[code]) {
+                    activeSessions[code].send(JSON.stringify({ transcript: response.text }));
+                }
             } catch (error) {
                 console.error(error);
             }
-        });
-
-        activeSessions[req.url.replace('/?code=', '')] = ws;
+        }
     });
-});
-
+// remove websocket uppon disconnect
+    ws.on('close', () => {
+            Object.keys(activeSessions).forEach((key) => {
+                if (activeSessions[key] === ws) {
+                    delete activeSessions[key];
+                    console.log(`Connection closed for code: ${key}`);
+                }
+            });
+        });
+    });
+}); 
 // start
 const server = app.listen(port, () => {
     console.log(`Server running on port ${port}`);
