@@ -34,7 +34,7 @@ app.post('/api/connect', (req, res) => {
     if (!activeSessions[code]) {
         return res.status(400).json({ error: 'Invalid or expired code' });
     }
-    res.json({ message: 'Connected successfully' });
+    return res.status(200).res.json({ message: 'Connected successfully' });
 });
 
 // handle audio stream from Holo Lens
