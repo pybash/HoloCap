@@ -42,15 +42,18 @@ app.on('upgrade', (req, socket, head) => {
     wss.handleUpgrade(req, socket, head, (ws) => {
         ws.on('message', async (message) => {
             const { code, data } = JSON.parse(message);
-            if (!activeSessions[code]){
-                ws.send(JSON.stringify({error:'Invalid or expired pairing code' }));
-                return
-            }
-            // store websocket conns
+
+               // store websocket conns
             if (activeSessions[code] === null) {
                 activeSessions[code] = ws;
                 console.log(`HoloLens connected with code: ${code}`);
             }
+
+            if (!activeSessions[code]){
+                ws.send(JSON.stringify({error:'Invalid or expired pairing code' }));
+                return
+            }
+         
 
             // Decode base64 audio data thru openai
             if (data) {
