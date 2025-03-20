@@ -34,7 +34,7 @@ app.post('/api/connect', (req, res) => {
     if (!activeSessions[code]) {
         return res.status(400).json({ error: 'Invalid or expired code' });
     }
-    res.json({ message: 'Connected successfully' });
+    return res.status(200).res.json({ message: 'Connected successfully' });
 });
 
 // handle audio stream from Holo Lens
@@ -42,14 +42,16 @@ app.on('upgrade', (req, socket, head) => {
     wss.handleUpgrade(req, socket, head, (ws) => {
         ws.on('message', async (message) => {
             const { code, data } = JSON.parse(message);
-            if (!activeSessions[code]){
-                ws.send(JSON.stringify({error:'Invalid or expired pairing code' }));
-                return
-            }
-            // store websocket conns
+               // store websocket conns
             if (activeSessions[code] === null) {
                 activeSessions[code] = ws;
                 console.log(`HoloLens connected with code: ${code}`);
+                ws.send(JSON.stringify({status: "connected"}));
+                return
+            }
+            if (!activeSessions[code]){
+                ws.send(JSON.stringify({error:'Invalid or expired pairing code' }));
+                return
             }
 
             // Decode base64 audio data thru openai
