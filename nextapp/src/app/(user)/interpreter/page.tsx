@@ -17,37 +17,37 @@ export default function Interpreter () {
 
     ]); 
 
-    const [vadStatus, setVAD] = useState(false);
-      const openai = new OpenAI({
-        apiKey: config.apiKey,
-        dangerouslyAllowBrowser: true
-      });
+    // const [vadStatus, setVAD] = useState(false);
+    //   const openai = new OpenAI({
+    //     apiKey: config.apiKey,
+    //     dangerouslyAllowBrowser: true
+    //   });
     
-      useMicVAD({
-        startOnLoad: true,
-        redemptionFrames: 4,
-        onSpeechStart: () => {
-          setVAD(true);
-        },
-        onSpeechEnd: (audio) => {
-          const wavBuffer = utils.encodeWAV(audio)
-          const base64 = utils.arrayBufferToBase64(wavBuffer)
-          const buffer = Buffer.from(base64, 'base64');
+    //   useMicVAD({
+    //     startOnLoad: true,
+    //     redemptionFrames: 4,
+    //     onSpeechStart: () => {
+    //       setVAD(true);
+    //     },
+    //     onSpeechEnd: (audio) => {
+    //       const wavBuffer = utils.encodeWAV(audio)
+    //       const base64 = utils.arrayBufferToBase64(wavBuffer)
+    //       const buffer = Buffer.from(base64, 'base64');
           
-          toFile(buffer, "audio.wav").then((audioFile) => {
-            openai.audio.transcriptions.create({
-              file: audioFile,
-              model: "whisper-1",
-              response_format: "json"
-            }).then((resp) => {
-                let date = new Date()
-                setLogData(oldLog => [...oldLog, {time: `${date.getHours()}:${date.getMinutes()}`, transcription: resp.text}])
-            })
-          })
-          setVAD(false)
+    //       toFile(buffer, "audio.wav").then((audioFile) => {
+    //         openai.audio.transcriptions.create({
+    //           file: audioFile,
+    //           model: "whisper-1",
+    //           response_format: "json"
+    //         }).then((resp) => {
+    //             let date = new Date()
+    //             setLogData(oldLog => [...oldLog, {time: `${date.getHours()}:${date.getMinutes()}`, transcription: resp.text}])
+    //         })
+    //       })
+    //       setVAD(false)
           
-        }
-      })
+    //     }
+    //   })
 
     return(
         <div className="min-h-[100vh] min-w-[100vw] bg-black flex justify-center items-center">
@@ -65,7 +65,7 @@ export default function Interpreter () {
             </div>
             <div className="flex relative">
            
-            <p>{vadStatus ? "LISTENING" : "WAITING"}</p>
+            {/* <p>{vadStatus ? "LISTENING" : "WAITING"}</p> */}
             </div>
         </div>
       </div>
