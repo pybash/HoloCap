@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BackgroundImage from "../../../../public/imgs/background.jpg"
 import { Log } from "./components/Log"
 import OpenAI, { toFile } from "openai";
@@ -16,6 +16,44 @@ export default function Interpreter () {
     const [LogData, setLogData] = useState([
 
     ]); 
+
+    let websocketConnection: WebSocket;
+
+    const [code, setCode] = useState("");
+
+    useEffect(() => {
+        fetch("http://localhost:5000/api/pair",
+            {
+                method: "POST"
+            }
+        )
+        .then(resp => resp.json())
+        .then((resp) => {
+            setCode(resp['code']);
+    
+            websocketConnection= new WebSocket("ws://localhost:5000/")
+    
+            websocketConnection.addEventListener("open", (evt) => {
+                console.log("We are in!")
+                websocketConnection.send(JSON.stringify({
+                    code: resp['code']
+                }))
+                websocketConnection.addEventListener("message", (evt) => {
+                    let payload = JSON.parse(evt["data"]);
+                    if(payload && payload["status"]) {
+                        if(payload["status"] == "connected") {
+                            console.log("Hooked UPPP!!")
+                        }
+                    }
+                })
+            })
+    
+            websocketConnection.addEventListener("message", (evt) => {
+                console.log(evt)
+            })
+        })
+    }, [])
+
 
     // const [vadStatus, setVAD] = useState(false);
     //   const openai = new OpenAI({
@@ -55,7 +93,10 @@ export default function Interpreter () {
       <div className="bg-[rgba(0,0,0,0.2)] w-full h-full absolute top-0 left-0"></div>
       <div className="w-full h-full flex flex-col items-center justify-center absolute top-0 left-0">
         <div className="w-[80%] h-[90%] flex flex-col justify-center items-center">
-            <p className="text-[23px]">Holo<b>Cap</b></p>
+            <div className="w-full flex justify-between items-center">
+                <p className="text-[23px]">Holo<b>Cap</b></p>
+                <p className="text-[20px]">Code: <b>{code}</b></p>
+            </div>
             <div className="w-[100%] h-[85%] flex flex-col-reverse border rounded-lg backdrop-blur-[10px] items-center overflow-y-scroll">
                 {
                     LogData.toReversed().map((elem, key) => (

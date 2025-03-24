@@ -7,6 +7,10 @@ export default function Home() {
     location.href = "/interpreter"
   }
 
+  function gotoMic() {
+    location.href = "/mic"
+  }
+
   return (
     <div className="min-h-[100vh] min-w-[100vw] bg-black flex justify-center items-center">
       <img src={BackgroundImage.src} className="w-full h-[100vh] object-cover select-none absolute top-0 left-0" />
@@ -18,7 +22,8 @@ export default function Home() {
               <h1 className="text-[50px] select-none">Holo<b>Cap</b></h1>
               <p>Developed by the SSE</p>
             </div>
-            <button className="w-[150px] text-[25px] p-[10px] border rounded-lg backdrop-blur-sm" onClick={gotoInterpreter}>Enter</button>
+            <button className="w-[150px] text-[25px] p-[10px] border rounded-lg backdrop-blur-sm" onClick={gotoInterpreter}>HoloLens Client</button>
+            <button className="w-[150px] text-[25px] p-[10px] border rounded-lg backdrop-blur-sm" onClick={gotoMic}>Microphone Client</button>
           </div>
           
         </div>

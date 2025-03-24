@@ -4,14 +4,30 @@ import AudioAnimation from "./components/AudioAnimation";
 
 export default function Microphone() {
     const [recording, setRecording] = useState(true);
+    const [code, setCode] = useState("");
+    
+    const [codeIn, setCodeIn] = useState("");
+
+    const [paired, setPair] = useState(false)
+
+    const pairDevice = () => {
+        setCode(codeIn);
+        setPair(true);
+    }
 
     return (
-        <div className="flex w-full h-full items-center justify-center ">
-            <div className="w-[80%] h-[80%] flex flex-col justify-between">
+        <div className="flex w-[100vw] h-[100vh] items-center justify-center">
+            <div className={"w-[50%] flex flex-col justify-between "  + (paired ? "hidden" : "flex")}>
+                <p className="text-[20px]">Device Code</p>
+                <input onChange={(evt)=> {setCodeIn(evt.target.value)}} value={codeIn} className="bg-black text-white outline-solid p-[10px] text-[17px] rounded-lg border-[2px] mb-[15px]"/>
+                <button className="border-[2px] rounded-lg py-[10px]" onClick={pairDevice}>Connect</button>
+            </div>
+            <div className={"w-[80%] h-[80%] flex-col justify-between " + (paired ? "flex" : "hidden")}>
                 {/* Header */}
                 <div className="flex flex-col items-center w-full">
                     <h2 className="text-[40px]">Holo<b>Cap</b></h2>
                     <p className="text-[24px]">Microphone Device</p>
+                    <p className="text-[20px]">Paired to <b>{code}</b></p>
                 </div>
                 {/* Buttons */}
                 <div className="flex flex-col items-center w-full ">
