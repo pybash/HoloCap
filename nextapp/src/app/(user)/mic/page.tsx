@@ -1,6 +1,7 @@
 "use client"; // This is a client component
-import { useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import AudioAnimation from "./components/AudioAnimation";
+import { useMicVAD, utils } from "@ricky0123/vad-react";
 
 export default function Microphone() {
     const [recording, setRecording] = useState(true);
@@ -9,11 +10,59 @@ export default function Microphone() {
     const [codeIn, setCodeIn] = useState("");
 
     const [paired, setPair] = useState(false)
+    const [vadEnabled, setVAD] = useState(false);
+    var websocketConnection: any = useRef(null);
+    useEffect(() => {
+        const socket = new WebSocket('ws://localhost:5000')
+        socket.addEventListener("open", () => {
+            socket.addEventListener("message", (evt)=> {
+                console.log(evt)
+                let jsonData = JSON.parse(evt.data)
+                if (jsonData["status"] && jsonData["status"] == "OK_MIC_CONNECTED") {
+                    setPair(true);
+                }
+            }) 
+        })
+        websocketConnection.current = socket
+        
+        return () => {
+            socket.close()
+        }
+    },[])
+    
+    useMicVAD({
+        startOnLoad: true,
+        redemptionFrames: 4,
+        onSpeechStart: () => {
+            if(!paired) return;
+            setVAD(true);
+        },
+        onSpeechEnd: (audio) => {
+            if(!vadEnabled || !paired) return;
+            const wavBuffer = utils.encodeWAV(audio)
+            const base64 = utils.arrayBufferToBase64(wavBuffer)
+
+
+            websocketConnection.current.send(JSON.stringify({
+                code: code,
+                data: base64
+            }))
+            setVAD(false)
+            
+        }
+    })
+    
 
     const pairDevice = () => {
         setCode(codeIn);
-        setPair(true);
+        
+        websocketConnection.current.send(JSON.stringify({
+            "code": codeIn,
+            "reqtype": "PING"
+        }))
+
     }
+
 
     return (
         <div className="flex w-[100vw] h-[100vh] items-center justify-center">

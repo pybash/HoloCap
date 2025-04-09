@@ -22,8 +22,8 @@ export default function Home() {
               <h1 className="text-[50px] select-none">Holo<b>Cap</b></h1>
               <p>Developed by the SSE</p>
             </div>
-            <button className="w-[150px] text-[25px] p-[10px] border rounded-lg backdrop-blur-sm" onClick={gotoInterpreter}>HoloLens Client</button>
-            <button className="w-[150px] text-[25px] p-[10px] border rounded-lg backdrop-blur-sm" onClick={gotoMic}>Microphone Client</button>
+            <button className="w-[30%] text-[25px] p-[10px] border rounded-lg backdrop-blur-sm" onClick={gotoInterpreter}>HoloLens Client</button>
+            <button className="w-[30%] text-[25px] p-[10px] border rounded-lg backdrop-blur-sm" onClick={gotoMic}>Microphone Client</button>
           </div>
           
         </div>

@@ -13,7 +13,7 @@ interface LogInfo {
 
 export default function Interpreter () {
 
-    const [LogData, setLogData] = useState([
+    const [LogData, setLogData] = useState<LogInfo[]>([
 
     ]); 
 
@@ -50,6 +50,21 @@ export default function Interpreter () {
     
             websocketConnection.addEventListener("message", (evt) => {
                 console.log(evt)
+                try {
+                    let data = JSON.parse(evt["data"]);
+                    console.log(data)
+                    if (data["transcript"]) {
+                        console.log("transcript conditional succeeds")
+                        let date = new Date()
+                        setLogData(oldLog => [
+                            ...oldLog,
+                            {time: `${date.getHours()}:${date.getMinutes()}`, transcription: data["transcript"]}
+                        ])
+                        console.log(LogData)
+                    }
+                } catch (e) {
+                    return console.error(e);
+                }
             })
         })
     }, [])
