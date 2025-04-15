@@ -9,7 +9,7 @@ const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 5000;
-const openai = new OpenAI({ apiKey: "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"});
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
@@ -21,10 +21,20 @@ const activeSessions = {};
 // websocket server
 const wss = new WebSocket.Server({ noServer: true });
 
+// Pages
+app.get("/interpreter", (req,res) => {
+    console.log("interpreter")
+    res.sendFile(path.join(__dirname, 'out', 'interpreter.html'))
+})
+app.get("/mic", (req,res) => {
+    res.sendFile(path.join(__dirname, 'out', 'mic.html'))
+})
+
 // pairing code
 app.post('/api/pair', (req, res) => {
     const code = crypto.randomBytes(3).toString('hex'); // 6 digi hex
     activeSessions[code] = null;
+    console.log(code)
     res.json({ code });
 });
 
