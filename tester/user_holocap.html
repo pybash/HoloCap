@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HoloCap User</title>
+    <link rel="stylesheet" href="styles/holocap.css">
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            let logData = []
+            let websocketConnection = undefined;
+            let XMLHttp = new XMLHttpRequest();
+
+            const refreshLogs = () => {
+                const reversedLogData = [...logData].reverse();
+                document.getElementById("logsContainer").innerHTML = ""
+                for(const log of reversedLogData) {
+                    let logInfoContainer = document.createElement("div")
+                    let timestamp = document.createElement("p")
+                    let transcription = document.createElement("p")
+
+                    timestamp.innerText = log["time"]
+                    timestamp.className = "timeStamp"
+                    transcription.innerText = log["transcription"]
+                    transcription.className = "transcription"
+
+                    logInfoContainer.appendChild(timestamp)
+                    logInfoContainer.appendChild(transcription)
+                    logInfoContainer.className = "logInfo"
+
+                    const textContainer = document.getElementById("logsContainer")
+                    textContainer.appendChild(logInfoContainer);
+                }
+            }
+
+            XMLHttp.open("POST", "/api/pair", true);
+            XMLHttp.onreadystatechange = function () {
+                if (XMLHttp.readyState === 4 && XMLHttp.status === 200) {
+                    let codeJSON = JSON.parse(XMLHttp.responseText)
+                    document.getElementById("codeset").innerText = codeJSON["code"]
+                    websocketConnection = new WebSocket("wss://" + location.host)
+                    
+
+                    websocketConnection.addEventListener("open", () => {
+                        console.log("We are in!")
+                        websocketConnection.send(JSON.stringify({
+                            code: codeJSON['code']
+                        }))
+                        websocketConnection.addEventListener("message", (evt) => {
+                            const payload = JSON.parse(evt["data"]);
+                            if(payload && payload["status"]) {
+                                if(payload["status"] == "connected") {
+                                    alert("Hooked UPPP!!")
+                                }
+                            }
+                        })
+                    })
+
+                    websocketConnection.addEventListener("message", (evt) => {
+                        console.log(evt)
+                        try {
+                            const data = JSON.parse(evt["data"]);
+                            console.log(data)
+                            if (data["transcript"]) {
+                                console.log("transcript conditional succeeds") 
+                                const date = new Date()
+                                logData.push(
+                                    {time: `${date.getHours()}:${date.getMinutes()}`, transcription: data["transcript"]}
+                                )
+                                refreshLogs()
+                                console.log(logData)
+                            }
+                        } catch (e) {
+                            return console.error(e);
+                        }
+                    })
+                }
+            };
+            XMLHttp.send();
+
+        //     fetch("/api/pair",
+        //         {
+        //             method: "POST"
+        //         }
+        //     )
+        //     .then(resp => resp.json())
+        //     .then((resp) => {
+        //         document.getElementById("codeSet").innerText = resp["code"]
+        //         websocketConnection = new WebSocket("wss://" + location.host)
+
+                // websocketConnection.addEventListener("open", () => {
+                //     console.log("We are in!")
+                //     websocketConnection.send(JSON.stringify({
+                //         code: resp['code']
+                //     }))
+                //     websocketConnection.addEventListener("message", (evt) => {
+                //         const payload = JSON.parse(evt["data"]);
+                //         if(payload && payload["status"]) {
+                //             if(payload["status"] == "connected") {
+                //                 console.log("Hooked UPPP!!")
+                //             }
+                //         }
+                //     })
+                // })
+
+                // websocketConnection.addEventListener("message", (evt) => {
+                //     console.log(evt)
+                //     try {
+                //         const data = JSON.parse(evt["data"]);
+                //         console.log(data)
+                //         if (data["transcript"]) {
+                //             console.log("transcript conditional succeeds") 
+                //             const date = new Date()
+                //             logData.push(
+                //                 {time: `${date.getHours()}:${date.getMinutes()}`, transcription: data["transcript"]}
+                //             )
+                //             console.log(LogData)
+                //         }
+                //     } catch (e) {
+                //         return console.error(e);
+                //     }
+                // })
+        //     })
+        // })
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="holoCap-app">
+            <div class="holoInfo">
+                <p class="holoHeading">Holo<b>Cap</b></p>
+                <p class="holoHeading">Code: <span id="codeset">CodeHere</span></p>
+            </div>
+            <div class="textContainer" id="logsContainer">
+                <!-- <div class="logInfo">
+                    <p class="timeStamp">10:00</p>
+                    <p class="transcription">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut quis urna in erat sodales efficitur vitae ut diam. Cras porttitor maximus ipsum sit amet laoreet. Ut ante urna, semper eu ipsum sed, ultricies vehicula arcu. Nam accumsan, neque non blandit euismod, sem elit fermentum lorem, nec dignissim felis sem quis lacus. Nullam hendrerit tempor lorem, in consequat ipsum dictum et. Morbi at enim pellentesque metus tristique scelerisque. Quisque viverra nibh quis felis sollicitudin venenatis. Morbi rutrum, justo sed auctor dapibus, ligula tortor consectetur tellus, sed ultrices sapien ex at metus.</p>
+                </div> -->
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="min-h-[100vh] min-w-[100vw] bg-black flex justify-center items-center">
+        <img src="background.jpg" class="w-full h-[100vh] object-cover select-none absolute top-0 left-0" />
+        <div class="bg-[rgba(0,0,0,0.2)] w-full h-full absolute top-0 left-0"></div>
+        <div class="w-full h-full flex flex-col items-center justify-center absolute top-0 left-0">
+          <div class="w-[80%] h-[90%] flex flex-col justify-center items-center">
+              <div class="w-full flex justify-between items-center">
+                  <p class="text-[23px] text-white">Holo<b>Cap</b></p>
+                  <p class="text-[20px] text-white">Code: <b id="codeSet"> {code}</b></p>
+              </div>
+              <div class="w-[100%] h-[85%] flex flex-col-reverse rounded-lg backdrop-blur-[10px] items-center overflow-y-scroll"
+                style="border: 1px solid white;"
+              >
+              </div>
+              <div class="flex relative">
+             
+              </div>
+          </div>
+        </div>
+      </div> -->
+</body>
+</html>

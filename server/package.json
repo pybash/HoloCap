@@ -9,6 +9,12 @@
   "author": "Jetmon Deng",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.21.2"
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "openai": "^4.86.1",
+    "ws": "^8.18.1"
   }
 }
