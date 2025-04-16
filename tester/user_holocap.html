@@ -12,7 +12,7 @@
             let XMLHttp = new XMLHttpRequest();
 
             const refreshLogs = () => {
-                const reversedLogData = logData.reverse();
+                const reversedLogData = [...logData].reverse();
                 document.getElementById("logsContainer").innerHTML = ""
                 for(const log of reversedLogData) {
                     let logInfoContainer = document.createElement("div")
