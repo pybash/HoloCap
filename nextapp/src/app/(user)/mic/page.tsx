@@ -11,13 +11,13 @@ export default function Microphone() {
 
     const [paired, setPair] = useState(false)
     const [vadEnabled, setVAD] = useState(false);
-    var websocketConnection: any = useRef(null);
+    const websocketConnection: RefObject<WebSocket> = useRef((undefined as unknown) as WebSocket);
     useEffect(() => {
-        const socket = new WebSocket('ws://localhost:5000')
+        const socket = new WebSocket('wss://' + location.host)
         socket.addEventListener("open", () => {
             socket.addEventListener("message", (evt)=> {
                 console.log(evt)
-                let jsonData = JSON.parse(evt.data)
+                const jsonData = JSON.parse(evt.data)
                 if (jsonData["status"] && jsonData["status"] == "OK_MIC_CONNECTED") {
                     setPair(true);
                 }

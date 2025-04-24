@@ -16,10 +16,10 @@ export default {
     },
   },
   plugins: [
-    plugin(function ({ matchUtilities, theme }) {
+    plugin(function ({ matchUtilities, theme }: {matchUtilities: any, theme: any}) {
       matchUtilities(
         {
-          'animate-delay': (value) => ({
+          'animate-delay': (value: any) => ({
             animationDelay: value,
           }),
         },

@@ -3,11 +3,11 @@ import BackgroundImage from "../../public/imgs/background.jpg"
 
 export default function Home() {
 
-  function gotoInterpreter() {
-    location.href = "/interpreter"
+  const gotoInterpreter = () => {
+    location.href = "/user_holocap.html"
   }
 
-  function gotoMic() {
+  const gotoMic = () => {
     location.href = "/mic"
   }
 
@@ -22,8 +22,8 @@ export default function Home() {
               <h1 className="text-[50px] select-none">Holo<b>Cap</b></h1>
               <p>Developed by the SSE</p>
             </div>
-            <button className="w-[30%] text-[25px] p-[10px] border rounded-lg backdrop-blur-sm" onClick={gotoInterpreter}>HoloLens Client</button>
-            <button className="w-[30%] text-[25px] p-[10px] border rounded-lg backdrop-blur-sm" onClick={gotoMic}>Microphone Client</button>
+            <a className="w-[30%] text-[25px] p-[10px] border rounded-lg backdrop-blur-sm cursor-pointer text-center" onClick={gotoInterpreter}>HoloLens Client</a>
+            <a className="w-[30%] text-[25px] p-[10px] border rounded-lg backdrop-blur-sm cursor-pointer text-center" onClick={gotoMic}>Microphone Client</a>
           </div>
           
         </div>

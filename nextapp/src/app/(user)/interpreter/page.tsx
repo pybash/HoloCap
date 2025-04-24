@@ -1,10 +1,7 @@
 "use client";
-import { useEffect, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import BackgroundImage from "../../../../public/imgs/background.jpg"
 import { Log } from "./components/Log"
-import OpenAI, { toFile } from "openai";
-import { useMicVAD, utils } from "@ricky0123/vad-react";
-import config from "../../apiconfig.json"
 
 interface LogInfo {
     time: string,
@@ -17,12 +14,12 @@ export default function Interpreter () {
 
     ]); 
 
-    let websocketConnection: WebSocket;
+    const websocketConnection: RefObject<WebSocket> = useRef((undefined as unknown) as WebSocket);
 
     const [code, setCode] = useState("");
 
     useEffect(() => {
-        fetch("http://localhost:5000/api/pair",
+        fetch("/api/pair",
             {
                 method: "POST"
             }
@@ -31,15 +28,15 @@ export default function Interpreter () {
         .then((resp) => {
             setCode(resp['code']);
     
-            websocketConnection= new WebSocket("ws://localhost:5000/")
+            websocketConnection.current = new WebSocket("wss://" + location.host)
     
-            websocketConnection.addEventListener("open", (evt) => {
+            websocketConnection.current.addEventListener("open", () => {
                 console.log("We are in!")
-                websocketConnection.send(JSON.stringify({
+                websocketConnection.current.send(JSON.stringify({
                     code: resp['code']
                 }))
-                websocketConnection.addEventListener("message", (evt) => {
-                    let payload = JSON.parse(evt["data"]);
+                websocketConnection.current.addEventListener("message", (evt) => {
+                    const payload = JSON.parse(evt["data"]);
                     if(payload && payload["status"]) {
                         if(payload["status"] == "connected") {
                             console.log("Hooked UPPP!!")
@@ -48,14 +45,14 @@ export default function Interpreter () {
                 })
             })
     
-            websocketConnection.addEventListener("message", (evt) => {
+            websocketConnection.current.addEventListener("message", (evt) => {
                 console.log(evt)
                 try {
-                    let data = JSON.parse(evt["data"]);
+                    const data = JSON.parse(evt["data"]);
                     console.log(data)
                     if (data["transcript"]) {
-                        console.log("transcript conditional succeeds")
-                        let date = new Date()
+                        console.log("transcript conditional succeeds") 
+                        const date = new Date()
                         setLogData(oldLog => [
                             ...oldLog,
                             {time: `${date.getHours()}:${date.getMinutes()}`, transcription: data["transcript"]}
@@ -68,39 +65,6 @@ export default function Interpreter () {
             })
         })
     }, [])
-
-
-    // const [vadStatus, setVAD] = useState(false);
-    //   const openai = new OpenAI({
-    //     apiKey: config.apiKey,
-    //     dangerouslyAllowBrowser: true
-    //   });
-    
-    //   useMicVAD({
-    //     startOnLoad: true,
-    //     redemptionFrames: 4,
-    //     onSpeechStart: () => {
-    //       setVAD(true);
-    //     },
-    //     onSpeechEnd: (audio) => {
-    //       const wavBuffer = utils.encodeWAV(audio)
-    //       const base64 = utils.arrayBufferToBase64(wavBuffer)
-    //       const buffer = Buffer.from(base64, 'base64');
-          
-    //       toFile(buffer, "audio.wav").then((audioFile) => {
-    //         openai.audio.transcriptions.create({
-    //           file: audioFile,
-    //           model: "whisper-1",
-    //           response_format: "json"
-    //         }).then((resp) => {
-    //             let date = new Date()
-    //             setLogData(oldLog => [...oldLog, {time: `${date.getHours()}:${date.getMinutes()}`, transcription: resp.text}])
-    //         })
-    //       })
-    //       setVAD(false)
-          
-    //     }
-    //   })
 
     return(
         <div className="min-h-[100vh] min-w-[100vw] bg-black flex justify-center items-center">
