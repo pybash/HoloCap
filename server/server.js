@@ -9,7 +9,7 @@ const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 5000;
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY});
 
 app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
@@ -52,7 +52,7 @@ app.on('upgrade', (req, socket, head) => {
     console.log("CONNECT")
     wss.handleUpgrade(req, socket, head, (ws) => {
         ws.on('message', async (message) => {
-            const { code, data, reqtype } = JSON.parse(message);
+            const { code, data, reqtype, translateData } = JSON.parse(message);
                // store websocket conns
             if (activeSessions[code] == null || activeSessions[code] == undefined) {
                 activeSessions[code] = ws;
@@ -69,6 +69,27 @@ app.on('upgrade', (req, socket, head) => {
                 }
             }
 
+            if (translateData) {
+                console.log(`Translate this into ${translateData["to"]}:\n${translateData["content"]}`)
+                openai.chat.completions.create({
+                    messages: [
+                        {
+                            "role": "system",
+                            "content": `Translate this into ${translateData["to"]}:\n${translateData["content"]}\nDon't include any extra comments, only translation.`
+                        }
+                    ],
+                    model: "gpt-4o-mini"
+                }).then((resp) => {
+                    let translationData = {
+                        "original": translateData["content"],
+                        "translation": resp.choices[0].message.content
+                    }
+                    console.log(translationData)
+                    ws.send(JSON.stringify(translationData))
+                })
+                return;
+            }
+
             // Decode base64 audio data thru openai
             if (data) {
                 try {
@@ -78,7 +99,7 @@ app.on('upgrade', (req, socket, head) => {
                     let audioFile = await toFile(buffer, "audio.wav");
                     openai.audio.transcriptions.create({
                         file: audioFile,
-                        model: 'whisper-1',
+                        model: 'gpt-4o-mini-transcribe',
                         response_format: 'json'
                     }).then((resp) => {
                         console.log({

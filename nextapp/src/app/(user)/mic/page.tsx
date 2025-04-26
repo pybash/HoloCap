@@ -11,13 +11,13 @@ export default function Microphone() {
 
     const [paired, setPair] = useState(false)
     const [vadEnabled, setVAD] = useState(false);
-    var websocketConnection: any = useRef(null);
+    const websocketConnection: RefObject<WebSocket> = useRef((undefined as unknown) as WebSocket);
     useEffect(() => {
-        const socket = new WebSocket('ws://localhost:5000')
+        const socket = new WebSocket('wss://' + location.host)
         socket.addEventListener("open", () => {
             socket.addEventListener("message", (evt)=> {
                 console.log(evt)
-                let jsonData = JSON.parse(evt.data)
+                const jsonData = JSON.parse(evt.data)
                 if (jsonData["status"] && jsonData["status"] == "OK_MIC_CONNECTED") {
                     setPair(true);
                 }
@@ -33,12 +33,13 @@ export default function Microphone() {
     useMicVAD({
         startOnLoad: true,
         redemptionFrames: 4,
+        negativeSpeechThreshold: 3,
         onSpeechStart: () => {
-            if(!paired) return;
+            if(!recording || !paired) return;
             setVAD(true);
         },
         onSpeechEnd: (audio) => {
-            if(!vadEnabled || !paired) return;
+            if(!vadEnabled || !recording || !paired) return;
             const wavBuffer = utils.encodeWAV(audio)
             const base64 = utils.arrayBufferToBase64(wavBuffer)
 
@@ -49,7 +50,8 @@ export default function Microphone() {
             }))
             setVAD(false)
             
-        }
+        },
+        model: "v5"
     })
     
 
