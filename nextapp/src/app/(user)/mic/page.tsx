@@ -33,12 +33,13 @@ export default function Microphone() {
     useMicVAD({
         startOnLoad: true,
         redemptionFrames: 4,
+        negativeSpeechThreshold: 3,
         onSpeechStart: () => {
-            if(!paired) return;
+            if(!recording || !paired) return;
             setVAD(true);
         },
         onSpeechEnd: (audio) => {
-            if(!vadEnabled || !paired) return;
+            if(!vadEnabled || !recording || !paired) return;
             const wavBuffer = utils.encodeWAV(audio)
             const base64 = utils.arrayBufferToBase64(wavBuffer)
 
@@ -49,7 +50,8 @@ export default function Microphone() {
             }))
             setVAD(false)
             
-        }
+        },
+        model: "v5"
     })
     
 
